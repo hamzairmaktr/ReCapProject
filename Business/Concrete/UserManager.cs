@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspect.AutoFac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -19,12 +21,14 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Add(User user)
         {
             _userDal.Add(user);
             return new SuccessResult();
         }
 
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Delete(User user)
         {
             _userDal.Delete(user);
@@ -33,10 +37,6 @@ namespace Business.Concrete
 
         public IDataResult<List<User>> GetAll()
         {
-            if (DateTime.Now.Hour == 23)
-            {
-                return new ErrorDataResult<List<User>>(_userDal.GetAll(), Messages.MaintenanceTime);
-            }
             return new SuccessDataResult<List<User>>(_userDal.GetAll());
         }
 
@@ -45,6 +45,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(_userDal.Get(u => u.UserId == userId));
         }
 
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Update(User user)
         {
             _userDal.Update(user);

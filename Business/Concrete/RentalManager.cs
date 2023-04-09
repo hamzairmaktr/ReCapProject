@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspect.AutoFac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -20,12 +22,14 @@ namespace Business.Concrete
             _rentalDal = rentalDal;
         }
 
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         { 
             _rentalDal.Add(rental);
             return new SuccessResult();          
         }
 
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Delete(Rental rental)
         {
             _rentalDal.Delete(rental);
@@ -34,10 +38,6 @@ namespace Business.Concrete
 
         public IDataResult<List<Rental>> GetAll()
         {
-            if (DateTime.Now.Hour==23)
-            {
-                return new ErrorDataResult<List<Rental>>(_rentalDal.GetAll(), Messages.MaintenanceTime);
-            }
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());
         }
 
@@ -46,6 +46,7 @@ namespace Business.Concrete
             return new SuccessDataResult<Rental>(_rentalDal.Get(r => r.RentalId == rentalId));
         }
 
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Update(Rental rental)
         {
             _rentalDal.Update(rental);
