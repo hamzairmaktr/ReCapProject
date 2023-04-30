@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EFUserDal : EfEntityRepositoryBase<User, SQLContext>, IUserDal
+    public class EFUserDal : EfEntityRepositoryBase<User, Context>, IUserDal
     {
 
     }
